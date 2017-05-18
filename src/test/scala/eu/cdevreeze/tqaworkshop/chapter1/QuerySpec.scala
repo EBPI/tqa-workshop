@@ -20,8 +20,7 @@ import scala.collection.immutable
 
 import org.scalatest.FlatSpec
 
-import eu.cdevreeze.tqa.ENames.DimensionEName
-import eu.cdevreeze.tqa.ENames.IdEName
+import eu.cdevreeze.tqa.ENames._
 import eu.cdevreeze.tqa.Namespaces.LinkNamespace
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
 import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
@@ -56,11 +55,28 @@ class QuerySpec extends FlatSpec {
 
   private val XbrldiNamespace = "http://xbrl.org/2006/xbrldi"
   private val Iso4217Namespace = "http://www.xbrl.org/2003/iso4217"
-
   private val GaapNamespace = "http://xasb.org/gaap"
+
+  private val UnitRefEName = EName("unitRef")
+  private val ExplicitMemberEName = EName("explicitMember")
+  private val InstantEName = EName("instant")
+
+  private val XbrliContextEName = EName(XbrliNamespace, "context")
+  private val XbrliEntityEName = EName(XbrliNamespace, "entity")
+  private val XbrliIdentifierEName = EName(XbrliNamespace, "identifier")
+  private val XbrldiExplicitMemberEName = EName(XbrldiNamespace, "explicitMember")
+  private val XbrliUnitEName = EName(XbrliNamespace, "unit")
+  private val GaapRelatedPartyTypeOfRelationshipEName = EName(GaapNamespace, "RelatedPartyTypeOfRelationship")
+  private val GaapClassOfPreferredStockDescriptionAxisEName = EName(GaapNamespace, "ClassOfPreferredStockDescriptionAxis")
+  private val XbrliMeasureEName = EName(XbrliNamespace, "measure")
+  private val XbrliInstantEName = EName(XbrliNamespace, "instant")
 
   // In the tests below, use ENames and not (lexical) QNames in queries and element predicates.
   // Feel free to create EName constants where needed.
+  
+  //
+  //  Assignment 1
+  //
 
   "The query API" should "support filtering of child elements" in {
     // Semantic query: Find all XBRL contexts whose ID starts with the string "I-2007".
@@ -74,7 +90,9 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following function
 
-    def isContextHavingIdStartingWithI2007(elem: BackingElemApi): Boolean = ???
+    def isContextHavingIdStartingWithI2007(elem: BackingElemApi): Boolean = {
+      elem.resolvedName == XbrliContextEName && hasIdStartingWithI2007(elem)
+    }
 
     // Method filterChildElems filters child elements, like the name suggests.
     // An element predicate ("filter") is passed as argument.
@@ -88,6 +106,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 2
+  //
+
   it should "support filtering of descendant elements" in {
     // Semantic query: Find all explicit members in XBRL contexts.
 
@@ -95,14 +117,15 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following function
 
-    def isExplicitMember(elem: BackingElemApi): Boolean = ???
-
     // Method filterElems filters descendant elements; the word "descendant" is implicit in the name.
     // An element predicate ("filter") is passed as argument.
     // Like the name says, only element nodes are returned.
+    
+    def isAnXbrldiExplicitMember(elem: BackingElemApi): Boolean =
+      elem.resolvedName == XbrldiExplicitMemberEName
 
     val explicitMembers: immutable.IndexedSeq[BackingElemApi] =
-      rootElem.filterElems(isExplicitMember)
+      rootElem.filterElems(isAnXbrldiExplicitMember)
 
     assertResult(Set("explicitMember")) {
       explicitMembers.map(_.localName).toSet
@@ -120,6 +143,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 3
+  //
+
   it should "support filtering of descendant-or-self elements" in {
     // Semantic query: Find all elements in the xbrli namespace.
 
@@ -127,7 +154,8 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following function
 
-    def isInXbrliNamespace(elem: BackingElemApi): Boolean = ???
+    def isInXbrliNamespace(elem: BackingElemApi): Boolean =
+      elem.resolvedName.namespaceUriOption.contains(XbrliNamespace)
 
     // Method filterElemsOrSelf filters descendant-or-self elements; the word "descendant" is implicit in the name.
     // An element predicate ("filter") is passed as argument.
@@ -151,6 +179,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 4
+  //
+
   it should "support retrieval of attributes" in {
     // Semantic query: Find all XBRL unit IDs.
 
@@ -159,12 +191,20 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following variable
 
-    val unitIds: Set[String] = ???
+    def isUnit(elem: BackingElemApi): Boolean = {
+      elem.resolvedName == XbrliUnitEName
+    }
+
+    val unitIds: Set[String] = rootElem.filterElemsOrSelf(isUnit).flatMap(_.attributeOption(IdEName)).toSet
 
     assertResult(Set("U-Monetary", "U-Shares", "U-Pure")) {
       unitIds
     }
   }
+
+  //
+  //  Assignment 5
+  //
 
   it should "support retrieval of optional attributes" in {
     // Semantic query: Find all numeric item fact unitRefs.
@@ -174,12 +214,16 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following variable
 
-    val unitRefs: Set[String] = ???
+    val unitRefs: Set[String] = rootElem.findAllElems.flatMap(_.attributeOption(UnitRefEName)).toSet
 
     assertResult(Set("U-Monetary", "U-Shares", "U-Pure")) {
       unitRefs
     }
   }
+
+  //
+  //  Assignment 6
+  //
 
   it should "support retrieval of element texts" in {
     // Semantic query: Find all gaap:RelatedPartyTypeOfRelationship fact values.
@@ -189,12 +233,20 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following variable
 
-    val interestingFactValues: Set[String] = ???
+    def isRelatedPartyTypeOfRelationship(elem: BackingElemApi): Boolean = {
+      elem.resolvedName == GaapRelatedPartyTypeOfRelationshipEName
+    }
+
+    val interestingFactValues: Set[String] = rootElem.filterElems(isRelatedPartyTypeOfRelationship).map(_.text).toSet
 
     assertResult(Set("Parent", "JointVenture")) {
       interestingFactValues
     }
   }
+
+  //
+  //  Assignment 7
+  //
 
   it should "support retrieval of QName-valued texts" in {
     // Semantic query: Find all measures (as expanded names).
@@ -204,12 +256,20 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following variable
 
-    val measureNames: Set[EName] = ???
+    def isMeasure(elem: BackingElemApi): Boolean = {
+      elem.resolvedName == XbrliMeasureEName
+    }
+
+    val measureNames: Set[EName] = rootElem.filterElems(isMeasure).map(_.textAsResolvedQName).toSet
 
     assertResult(Set(EName(Iso4217Namespace, "USD"), EName(XbrliNamespace, "pure"), EName(XbrliNamespace, "shares"))) {
       measureNames
     }
   }
+
+  //
+  //  Assignment 8
+  //
 
   it should "support finding the first descendant element obeying some property" in {
     // Semantic query: Find the first optional XBRL context with entity identifier "1234567890"
@@ -221,16 +281,19 @@ class QuerySpec extends FlatSpec {
 
     // Implement the following function
 
-    def isContextHavingEntity(elem: BackingElemApi, scheme: String, identifier: String): Boolean = ???
-
-    // Method findElem finds the optional first descendant element obeying the given element predicate;
-    // the word "descendant" is implicit in the name.
-    // An element predicate ("filter") is passed as argument.
-    // Like the name says, only element nodes are returned.
-
+    def isContextHavingEntity(elem: BackingElemApi, scheme: String, identifier: String): Boolean = {
+      elem.resolvedName == XbrliContextEName &&
+      elem.findElem(e => e.resolvedName == XbrliIdentifierEName && e.text == identifier && e.attributeOption(SchemeEName).contains(scheme)).nonEmpty
+    }
+  
+      // Method findElem finds the optional first descendant element obeying the given element predicate;
+      // the word "descendant" is implicit in the name.
+      // An element predicate ("filter") is passed as argument.
+      // Like the name says, only element nodes are returned.
+  
     val interestingContextOption: Option[BackingElemApi] =
       rootElem.findElem(e => isContextHavingEntity(e, "http://www.sec.gov/CIK", "1234567890"))
-
+  
     assertResult(Some(EName(XbrliNamespace, "context"))) {
       interestingContextOption.map(_.resolvedName)
     }
@@ -244,6 +307,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 9
+  //
+
   it should "support finding the first descendant element obeying some property about QName-valued attributes" in {
     // Semantic query: Find the first optional XBRL context with dimension gaap:ClassOfPreferredStockDescriptionAxis
     // (as the corresponding EName) in its segment.
@@ -253,8 +320,19 @@ class QuerySpec extends FlatSpec {
     // This query contains several yaidom query API calls, instead of just one query API call.
 
     // Implement the following variable
+    
+    def isContextHavingDimension(elem: BackingElemApi): Boolean = {
+      elem.resolvedName == XbrliContextEName &&
+        elem.findElem(e => e.resolvedName == XbrldiExplicitMemberEName && e.attributeAsResolvedQNameOption(DimensionEName).contains(GaapClassOfPreferredStockDescriptionAxisEName)).nonEmpty
+        
+//        assuming we have scheme valid xbrl document we can drop the attributeAsResolvedQNameOption:
+//        elem.findElem(e => e.resolvedName == XbrldiExplicitMemberEName && e.attributeAsResolvedQName(DimensionEName) == GaapClassOfPreferredStockDescriptionAxisEName).nonEmpty
+//
+        
+    }
 
-    val interestingContextOption: Option[BackingElemApi] = ???
+    val interestingContextOption: Option[BackingElemApi] =
+      rootElem.findElem(e => isContextHavingDimension(e))
 
     assertResult(Some(EName(XbrliNamespace, "context"))) {
       interestingContextOption.map(_.resolvedName)
@@ -269,6 +347,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 10
+  //
+
   it should "support querying QName-valued attributes and texts" in {
     // Semantic query: Find all dimensions and their members occurring in the XBRL instance.
 
@@ -276,8 +358,15 @@ class QuerySpec extends FlatSpec {
     // build a Map from dimension ENames to Sets of member ENames from those explicit members.
 
     // Implement the following variable
+    
+   def isADimension(elem: BackingElemApi): Boolean = {    
+      elem.attributeOption(DimensionEName).nonEmpty
+    }
+   
+   val groupedByDimension = rootElem.filterElems(isADimension).groupBy(_.attributeAsResolvedQName(DimensionEName))
 
-    val dimensionMembers: Map[EName, Set[EName]] = ???
+    val dimensionMembers: Map[EName, Set[EName]] =
+      groupedByDimension.mapValues(group => group.map(e => e.textAsResolvedQName).toSet)
 
     val scope = Scope.from("gaap" -> GaapNamespace)
     import scope._
@@ -294,14 +383,22 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 11
+  //
+
   it should "support querying ancestor elements" in {
     // Semantic query: Find all XBRL contexts for (instant) period 2006-12-31.
 
     // Yaidom query: Find all 2006-12-31 (instant) periods, and return their ancestor XBRL contexts.
 
     // Implement the following variable
-
-    val interestingPeriods: immutable.IndexedSeq[BackingElemApi] = ???
+    
+    def isAnInstant(elem: BackingElemApi, date: String): Boolean = {
+      elem.resolvedName == XbrliInstantEName && elem.text == date
+    }
+   
+    val interestingPeriods: immutable.IndexedSeq[BackingElemApi] = rootElem.filterElems(e => isAnInstant(e, "2006-12-31"))
 
     def isContext(elem: BackingElemApi): Boolean = elem.resolvedName == EName(XbrliNamespace, "context")
 
@@ -329,6 +426,10 @@ class QuerySpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 12
+  //
+
   it should "support non-trivial queries involving ancestor elements" in {
     // Semantic query: Find all facts in the instance.
 
@@ -336,8 +437,18 @@ class QuerySpec extends FlatSpec {
     // and that have no ancestors in those namespaces other than the xbrli:xbrl root element.
 
     // Implement the following variable
+    
+    def isInNameSpace(elem: BackingElemApi, namespace: String): Boolean =
+      elem.resolvedName.namespaceUriOption.contains(namespace)
 
-    val facts: immutable.IndexedSeq[BackingElemApi] = ???
+    rootElem.filterElems(e => !isInNameSpace(e, XbrliNamespace) && 
+        !isInNameSpace(e, LinkNamespace) &&
+        e.findAncestor(e => isInNameSpace(e, XbrliNamespace) || isInNameSpace(e, LinkNamespace)).contains(rootElem)) foreach(e => println(e.resolvedName))
+
+    val facts: immutable.IndexedSeq[BackingElemApi] = 
+      rootElem.filterElems(e => !isInNameSpace(e, XbrliNamespace) && 
+          !isInNameSpace(e, LinkNamespace) && 
+          e.findAncestor(e => isInNameSpace(e, XbrliNamespace) || isInNameSpace(e, LinkNamespace)).contains(rootElem))
 
     assertResult(Set(GaapNamespace)) {
       facts.flatMap(_.resolvedName.namespaceUriOption).toSet

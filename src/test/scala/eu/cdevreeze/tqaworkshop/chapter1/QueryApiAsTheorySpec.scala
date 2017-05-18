@@ -57,103 +57,158 @@ class QueryApiAsTheorySpec extends FlatSpec {
   // Below, the names of the tests should be clear instructions as to how the tests should be made to run
 
   // "Re-implementing" filterChildElems, filterElems and filterElemsOrSelf
+  
+  //
+  //  Assignment 1
+  //
 
   "The yaidom query API as theory" should "support writing 'filterChildElems' in terms of 'findAllChildElems' and the Scala Collections API" in {
     assertResult(rootElem.filterChildElems(isInXbrlNamespace)) {
       val allChildElems = rootElem.findAllChildElems
 
       // Use the Scala Collections API to turn allChildElems into the desired result
-      ???
+      allChildElems.filter(isInXbrlNamespace)
     }
   }
+
+  //
+  //  Assignment 2
+  //
 
   it should "support writing 'filterElems' in terms of 'findAllElems' and the Scala Collections API" in {
     assertResult(rootElem.filterElems(isInXbrlNamespace)) {
       val allElems = rootElem.findAllElems
 
       // Use the Scala Collections API to turn allElems into the desired result
-      ???
+      allElems.filter(isInXbrlNamespace)
     }
   }
+
+  //
+  //  Assignment 3
+  //
 
   it should "support writing 'filterElemsOrSelf' in terms of 'findAllElemsOrSelf' and the Scala Collections API" in {
     assertResult(rootElem.filterElemsOrSelf(isInXbrlNamespace)) {
       val allElemsOrSelf = rootElem.findAllElemsOrSelf
 
       // Use the Scala Collections API to turn allElemsOrSelf into the desired result
-      ???
+      allElemsOrSelf.filter(isInXbrlNamespace)
     }
   }
 
   // "Re-implementing" findAllChildElems, findAllElems and findAllElemsOrSelf
 
+  //
+  //  Assignment 4
+  //
+
   it should "support writing 'findAllChildElems' in terms of 'filterChildElems'" in {
     assertResult(rootElem.findAllChildElems) {
-      ???
+      rootElem.filterChildElems(e => true)
     }
   }
+
+  //
+  //  Assignment 5
+  //
 
   it should "support writing 'findAllElems' in terms of 'filterElems'" in {
     assertResult(rootElem.findAllElems) {
-      ???
+      rootElem.filterElems(e => true)
     }
   }
 
+  //
+  //  Assignment 6
+  //
+
   it should "support writing 'findAllElemsOrSelf' in terms of 'filterElemsOrSelf'" in {
     assertResult(rootElem.findAllElemsOrSelf) {
-      ???
+      rootElem.filterElemsOrSelf(e => true)
     }
   }
 
   // "Re-implementing" findTopmostElems and findTopmostElemsOrSelf.
   // This is more challenging than the other exercises in this test!
 
+  //
+  //  Assignment 7
+  //
+
   it should "support writing 'findTopmostElems' in terms of 'filterElems'" in {
     assertResult(rootElem.findTopmostElems(isInXbrlNamespace)) {
-      ???
+      rootElem.filterElems(e => isInXbrlNamespace(e) && e.findAncestor(isInXbrlNamespace).forall(_ == rootElem))
     }
   }
+
+  //
+  //  Assignment 8
+  //
 
   it should "support writing 'findTopmostElemsOrSelf' in terms of 'filterElemsOrSelf'" in {
     assertResult(rootElem.findTopmostElemsOrSelf(isInXbrlNamespace)) {
-      ???
+      rootElem.filterElemsOrSelf(e => isInXbrlNamespace(e) && e.findAncestor(isInXbrlNamespace).isEmpty)
     }
   }
 
+  //
+  //  Assignment 9
+  //
+
   it should "support writing 'findTopmostElems' in terms of 'findTopmostElemsOrSelf' and 'findAllChildElems'" in {
     assertResult(rootElem.findTopmostElems(isInXbrlNamespace)) {
-      ???
+      rootElem.findAllChildElems flatMap (e => e.findTopmostElemsOrSelf(isInXbrlNamespace))
     }
   }
 
   // "Re-implementing" findChildElem, findElem and findElemOrSelf
 
+  //
+  //  Assignment 10
+  //
+
   it should "support writing 'findChildElem' in terms of 'filterChildElems'" in {
     assertResult(rootElem.findChildElem(isInXbrlNamespace)) {
-      ???
+      rootElem.filterChildElems(isInXbrlNamespace).headOption
     }
   }
+
+  //
+  //  Assignment 11
+  //
 
   it should "support writing 'findElem' in terms of 'filterElems'" in {
     assertResult(rootElem.findElem(isInXbrlNamespace)) {
-      ???
+      rootElem.filterElems(isInXbrlNamespace).headOption
     }
   }
 
+  //
+  //  Assignment 12
+  //
+
   it should "support writing 'findElemOrSelf' in terms of 'filterElemsOrSelf'" in {
     assertResult(rootElem.findElemOrSelf(isInXbrlNamespace)) {
-      ???
+      rootElem.filterElemsOrSelf(isInXbrlNamespace).headOption
     }
   }
 
   // Scopes and Declarations
+
+  //
+  //  Assignment 13
+  //
 
   it should "support getting each element scope in terms of the declarations and parent scope" in {
     // Implement function getScope in terms of its namespace declarations and the scope of its parent element.
     // Mind the possibility the there is no parent element (for the root itself, of course).
     // Use functions like "namespaces", "parentOption" and "scope".
 
-    def getScope(e: BackingElemApi): Scope = ???
+    def getScope(e: BackingElemApi): Scope = {
+      val parentScope = e.parentOption.map(_.scope).getOrElse(Scope.Empty)
+      parentScope.resolve(e.namespaces)
+    }
 
     assertResult(rootElem.findAllElemsOrSelf.map(_.scope)) {
       rootElem.findAllElemsOrSelf.map(getScope)
@@ -162,10 +217,15 @@ class QueryApiAsTheorySpec extends FlatSpec {
 
   // QNames and ENames
 
+  //
+  //  Assignment 14
+  //
+
   it should "support getting each element EName in terms of its element QName and its Scope" in {
     // Implement function getEName in terms of its QName and Scope.
 
-    def getEName(e: BackingElemApi): EName = ???
+    def getEName(e: BackingElemApi): EName =
+      e.scope.resolveQNameOption(e.qname).get
 
     assertResult(rootElem.findAllElemsOrSelf.map(_.resolvedName)) {
       rootElem.findAllElemsOrSelf.map(getEName)
@@ -177,10 +237,15 @@ class QueryApiAsTheorySpec extends FlatSpec {
 
   // Paths
 
+  //
+  //  Assignment 15
+  //
+
   it should "support getting each element in terms of its (navigation) path and root element" in {
     // Implement function getElement.
 
-    def getElement(rootElem: BackingElemApi, path: Path): BackingElemApi = ???
+    def getElement(rootElem: BackingElemApi, path: Path): BackingElemApi =
+      rootElem.getElemOrSelfByPath(path)
 
     // In order not to lean too much on element equality, we only compare the collections of element ENames
 
