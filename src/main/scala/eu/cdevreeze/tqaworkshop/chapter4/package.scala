@@ -18,6 +18,7 @@ package eu.cdevreeze.tqaworkshop
 
 /**
  * Chapter 4 treats taxonomy schemas, and introduces the corresponding parts of TQA.
+ * The TQA taxonomy query API is also introduced, to the extent that it pertains to taxonomy schema data.
  *
  * @author Chris de Vreeze
  */

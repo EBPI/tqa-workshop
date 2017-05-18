@@ -46,6 +46,8 @@ import net.sf.saxon.s9api.Processor
  */
 class QuerySpec extends FlatSpec {
 
+  // Parsing the instance into an "BackingElemApi" element with Saxon, although the use of Saxon does not influence the querying code.
+
   private val processor = new Processor(false)
   private val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
 
@@ -57,15 +59,20 @@ class QuerySpec extends FlatSpec {
 
   private val GaapNamespace = "http://xasb.org/gaap"
 
+  // In the tests below, use ENames and not (lexical) QNames in queries and element predicates.
+  // Feel free to create EName constants where needed.
+
   "The query API" should "support filtering of child elements" in {
     // Semantic query: Find all XBRL contexts whose ID starts with the string "I-2007".
 
     // Yaidom query: Filter all child elements of the root element named xbrli:context, having an ID attribute
-    // starting with string "I-2007". Use ENames and not (lexical) QNames in the query.
+    // starting with string "I-2007".
 
     def hasIdStartingWithI2007(elem: BackingElemApi): Boolean = {
       elem.attributeOption(IdEName).exists(_.startsWith("I-2007"))
     }
+
+    // Implement the following function
 
     def isContextHavingIdStartingWithI2007(elem: BackingElemApi): Boolean = ???
 
@@ -85,7 +92,8 @@ class QuerySpec extends FlatSpec {
     // Semantic query: Find all explicit members in XBRL contexts.
 
     // Yaidom query: Filter all descendant elements of the root element named xbrldi:explicitMember.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following function
 
     def isExplicitMember(elem: BackingElemApi): Boolean = ???
 
@@ -116,7 +124,8 @@ class QuerySpec extends FlatSpec {
     // Semantic query: Find all elements in the xbrli namespace.
 
     // Yaidom query: Filter all descendant-or-self elements of the root element in the xbrli namespace.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following function
 
     def isInXbrliNamespace(elem: BackingElemApi): Boolean = ???
 
@@ -145,9 +154,10 @@ class QuerySpec extends FlatSpec {
   it should "support retrieval of attributes" in {
     // Semantic query: Find all XBRL unit IDs.
 
-    // Yaidom query: Find all xbrli:unit ID attributes.
+    // Yaidom query: Find all xbrli:unit element ID attributes.
     // This query contains several yaidom query API calls, instead of just one query API call.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following variable
 
     val unitIds: Set[String] = ???
 
@@ -161,7 +171,8 @@ class QuerySpec extends FlatSpec {
 
     // Yaidom query: Find all unitRef attributes in descendant elements of the root element.
     // This query contains several yaidom query API calls, instead of just one query API call.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following variable
 
     val unitRefs: Set[String] = ???
 
@@ -175,7 +186,8 @@ class QuerySpec extends FlatSpec {
 
     // Yaidom query: Find all texts of descendant elements of the root element that have
     // element name gaap:RelatedPartyTypeOfRelationship.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following variable
 
     val interestingFactValues: Set[String] = ???
 
@@ -188,7 +200,9 @@ class QuerySpec extends FlatSpec {
     // Semantic query: Find all measures (as expanded names).
 
     // Yaidom query: Find all texts as ENames of descendant elements of the root element that have
-    // element name xbrli:measure. Use ENames and not (lexical) QNames in the query.
+    // element name xbrli:measure.
+
+    // Implement the following variable
 
     val measureNames: Set[EName] = ???
 
@@ -204,9 +218,10 @@ class QuerySpec extends FlatSpec {
     // Yaidom query: Find the first optional descendant element of the root element that is an xbrli:context
     // having an entity identifier for scheme "http://www.sec.gov/CIK" having value "1234567890".
     // This query contains several yaidom query API calls, instead of just one query API call.
-    // Use ENames and not (lexical) QNames in the query.
 
-    def hasEntity(elem: BackingElemApi, scheme: String, identifier: String): Boolean = ???
+    // Implement the following function
+
+    def isContextHavingEntity(elem: BackingElemApi, scheme: String, identifier: String): Boolean = ???
 
     // Method findElem finds the optional first descendant element obeying the given element predicate;
     // the word "descendant" is implicit in the name.
@@ -214,7 +229,7 @@ class QuerySpec extends FlatSpec {
     // Like the name says, only element nodes are returned.
 
     val interestingContextOption: Option[BackingElemApi] =
-      rootElem.findElem(e => hasEntity(e, "http://www.sec.gov/CIK", "1234567890"))
+      rootElem.findElem(e => isContextHavingEntity(e, "http://www.sec.gov/CIK", "1234567890"))
 
     assertResult(Some(EName(XbrliNamespace, "context"))) {
       interestingContextOption.map(_.resolvedName)
@@ -236,7 +251,8 @@ class QuerySpec extends FlatSpec {
     // Yaidom query: Find the first optional descendant element of the root element that is an xbrli:context
     // having a segment containing an explicit member with dimension gaap:ClassOfPreferredStockDescriptionAxis (as EName).
     // This query contains several yaidom query API calls, instead of just one query API call.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following variable
 
     val interestingContextOption: Option[BackingElemApi] = ???
 
@@ -258,7 +274,8 @@ class QuerySpec extends FlatSpec {
 
     // Yaidom query: Find all explicit member descendant elements of the root element, and
     // build a Map from dimension ENames to Sets of member ENames from those explicit members.
-    // Use ENames and not (lexical) QNames in the query.
+
+    // Implement the following variable
 
     val dimensionMembers: Map[EName, Set[EName]] = ???
 
@@ -278,9 +295,11 @@ class QuerySpec extends FlatSpec {
   }
 
   it should "support querying ancestor elements" in {
-    // Semantic query: Find all XBRL contexts for (instant) period 2016-12-31.
+    // Semantic query: Find all XBRL contexts for (instant) period 2006-12-31.
 
     // Yaidom query: Find all 2006-12-31 (instant) periods, and return their ancestor XBRL contexts.
+
+    // Implement the following variable
 
     val interestingPeriods: immutable.IndexedSeq[BackingElemApi] = ???
 
@@ -315,6 +334,8 @@ class QuerySpec extends FlatSpec {
 
     // Yaidom query: Find all descendant elements of the root element that are not in the xbrli or link namespaces
     // and that have no ancestors in those namespaces other than the xbrli:xbrl root element.
+
+    // Implement the following variable
 
     val facts: immutable.IndexedSeq[BackingElemApi] = ???
 

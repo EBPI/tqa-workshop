@@ -35,6 +35,8 @@ import net.sf.saxon.s9api.Processor
 object ShowXbrlInstanceElemAsMatrix {
 
   def main(args: Array[String]): Unit = {
+    // The program may get one argument for the XML input file path, taking a default otherwise
+
     require(args.size <= 1, s"Usage: ShowXbrlInstanceElemAsMatrix [ <XML input file path> ]")
 
     val inputXmlFile =
@@ -44,6 +46,8 @@ object ShowXbrlInstanceElemAsMatrix {
       } else {
         new File(args(0))
       }
+
+    // We are going to parse an element tree as "BackingElemApi" with Saxon, although this does not affect the querying code.
 
     val processor = new Processor(false)
     val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder, (uri => uri))

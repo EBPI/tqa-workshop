@@ -47,7 +47,7 @@ sealed trait XLinkElem extends ScopedElemApi {
   def backingElem: BackingElemApi
 
   final def xlinkAttributes: Map[EName, String] = {
-    resolvedAttributes.toMap.filterKeys(_.namespaceUriOption == Some(XLinkNamespace))
+    resolvedAttributes.toMap.filterKeys(_.namespaceUriOption.contains(XLinkNamespace))
   }
 }
 

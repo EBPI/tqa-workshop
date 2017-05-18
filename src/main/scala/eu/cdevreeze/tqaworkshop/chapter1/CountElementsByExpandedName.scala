@@ -61,6 +61,8 @@ import eu.cdevreeze.yaidom.parse.DocumentParserUsingSax
 object CountElementsByExpandedName {
 
   def main(args: Array[String]): Unit = {
+    // The program may get one argument for the XML input file path, taking a default otherwise
+
     require(args.size <= 1, s"Usage: CountElementsByExpandedName [ <XML input file path> ]")
 
     val inputXmlFile =
@@ -71,9 +73,14 @@ object CountElementsByExpandedName {
         new File(args(0))
       }
 
+    // We are going to parse the document as native yaidom "simple" Document.
+
     val docParser = DocumentParserUsingSax.newInstance()
 
     val doc = docParser.parse(inputXmlFile)
+
+    // Find all descendant-or-self elements of the root element.
+    // This same query API call could have been used if the document was backed by another "XML backend" than native yaidom, such as Saxon
 
     val allElems = doc.documentElement.findAllElemsOrSelf
 

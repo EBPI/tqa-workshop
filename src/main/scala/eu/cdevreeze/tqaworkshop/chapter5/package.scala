@@ -18,6 +18,7 @@ package eu.cdevreeze.tqaworkshop
 
 /**
  * Chapter 5 treats XBRL linkbases and arcs versus relationships, and introduces the corresponding parts of TQA.
+ * The TQA taxonomy query API is also further introduced, combining schema and linkbase data.
  *
  * @author Chris de Vreeze
  */

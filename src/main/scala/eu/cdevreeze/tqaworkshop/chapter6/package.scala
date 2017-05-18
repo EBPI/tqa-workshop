@@ -17,7 +17,11 @@
 package eu.cdevreeze.tqaworkshop
 
 /**
- * Chapter 6 treats the TQA query API, without dimensions.
+ * Chapter 6 treats the TQA dimensional query API.
+ *
+ * TODO Show dimensional instance validation in console program.
+ *
+ * TODO Show formula structure in console program.
  *
  * @author Chris de Vreeze
  */

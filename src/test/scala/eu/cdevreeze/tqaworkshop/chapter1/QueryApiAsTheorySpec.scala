@@ -42,6 +42,8 @@ import net.sf.saxon.s9api.Processor
  */
 class QueryApiAsTheorySpec extends FlatSpec {
 
+  // Parsing the instance into an "BackingElemApi" element with Saxon, although the use of Saxon does not influence the querying code.
+
   private val processor = new Processor(false)
   private val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
 
@@ -49,7 +51,7 @@ class QueryApiAsTheorySpec extends FlatSpec {
     docBuilder.build(classOf[QueryApiAsTheorySpec].getResource("/sample-Instance-Proof.xml").toURI)
 
   private def isInXbrlNamespace(elem: BackingElemApi): Boolean = {
-    elem.resolvedName.namespaceUriOption == Some(XbrliNamespace)
+    elem.resolvedName.namespaceUriOption.contains(XbrliNamespace)
   }
 
   // Below, the names of the tests should be clear instructions as to how the tests should be made to run
@@ -103,7 +105,8 @@ class QueryApiAsTheorySpec extends FlatSpec {
     }
   }
 
-  // "Re-implementing" findTopmostElems and findTopmostElemsOrSelf
+  // "Re-implementing" findTopmostElems and findTopmostElemsOrSelf.
+  // This is more challenging than the other exercises in this test!
 
   it should "support writing 'findTopmostElems' in terms of 'filterElems'" in {
     assertResult(rootElem.findTopmostElems(isInXbrlNamespace)) {
