@@ -90,6 +90,10 @@ class XLinkSpec extends FlatSpec {
 
   // Below, many exercises are very easy to complete. Only a few exercises are more challenging.
 
+  //
+  //  Assignment 1
+  //
+
   "Each linkbase reference" should "be an XLink simple link" in {
     val schema = taxonomyBase.rootElemUriMap(schemaUri)
 
@@ -101,10 +105,10 @@ class XLinkSpec extends FlatSpec {
     // In TQA, using its type-safe DOM, the query is as follows:
 
     val linkbaseRefs = schema.findAllElemsOfType(classTag[LinkbaseRef])
-
+    
     // In a similar manner, retrieve all XLink simple links in the schema (as descendant elements of the root)
 
-    val simpleLinks: immutable.IndexedSeq[SimpleLink] = ???
+    val simpleLinks: immutable.IndexedSeq[SimpleLink] = schema.findAllElemsOfType(classTag[SimpleLink])
 
     // We compare elements defensively by comparing their Paths (relative to the root element)
 
@@ -113,6 +117,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 2
+  //
+
   "A simple link" should "have xlink:type 'simple'" in {
     val schema = taxonomyBase.rootElemUriMap(schemaUri)
 
@@ -120,7 +128,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink types using TQA, and not using yaidom directly.
 
-    val xlinkTypesOfSimpleLinks: Set[String] = ???
+    val xlinkTypesOfSimpleLinks: Set[String] = simpleLinks.map(_.xlinkType).toSet
 
     assertResult(Set("simple")) {
       xlinkTypesOfSimpleLinks
@@ -133,6 +141,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 3
+  //
+
   it should "have an xlink:href attribute" in {
     val schema = taxonomyBase.rootElemUriMap(schemaUri)
 
@@ -140,8 +152,8 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink hrefs using TQA, and not using yaidom directly.
 
-    val rawHrefs: Set[URI] = ???
-
+    val rawHrefs: Set[URI] = simpleLinks.map(_.rawHref).toSet
+    
     assertResult(true) {
       val someRawHrefs = Set(
         URI.create("rj-data-documentation-lab-nl.xml"),
@@ -160,6 +172,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 4
+  //
+
   it should "have an absolute href after resolution against the 'base' URI" in {
     val schema = taxonomyBase.rootElemUriMap(schemaUri)
 
@@ -167,9 +183,9 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink hrefs (but made absolute) using TQA, and not using yaidom directly.
     // Remember that the schema holds the original HTTP document URI!
-
-    val absoluteHrefs: Set[URI] = ???
-
+    
+    val absoluteHrefs: Set[URI] = simpleLinks.map(e => e.baseUri.resolve(e.rawHref)).toSet
+      
     assertResult(true) {
       val someAbsoluteHrefs = Set(
         URI.create("http://www.nltaxonomie.nl/nt11/rj/20170419/dictionary/rj-data-documentation-lab-nl.xml"),
@@ -182,6 +198,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 5
+  //
+
   "An extended link" should "have xlink:type 'extended'" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -189,7 +209,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink types using TQA, and not using yaidom directly.
 
-    val xlinkTypesOfExtendedLinks: Set[String] = ???
+    val xlinkTypesOfExtendedLinks: Set[String] = extendedLinks.map(_.xlinkType).toSet
 
     assertResult(Set("extended")) {
       xlinkTypesOfExtendedLinks
@@ -202,15 +222,19 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 6
+  //
+
   it should "have an extended link role (ELR)" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
     val extendedLinks = linkbase.findAllElemsOrSelfOfType(classTag[ExtendedLink])
-
+    
     // Retrieve the extended link roles (ELRs) using TQA, and not using yaidom directly.
 
-    val elrsOfExtendedLinks: Set[String] = ???
-
+    val elrsOfExtendedLinks: Set[String] = extendedLinks.flatMap(_.roleOption).toSet
+    
     assertResult(Set("http://www.xbrl.org/2003/role/link")) {
       elrsOfExtendedLinks
     }
@@ -222,6 +246,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 7
+  //
+
   it should "contain XLink arcs all having both an xlink:from and xlink:to" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -229,9 +257,10 @@ class XLinkSpec extends FlatSpec {
     val firstExtendedLink = extendedLinks.head
 
     // Retrieve the xlink:from and xlink:to values in the arcs of the first extended link.
-    // Use TQA, and do not use yaidom directly.
-
-    val fromToPairsInFirstExtendedLink: Set[(String, String)] = ???
+    // Use TQA, and do not use yaidom directly.   
+            
+    val fromToPairsInFirstExtendedLink: Set[(String, String)] =
+      firstExtendedLink.arcs.map(e => (e.from, e.to)).toSet
 
     assertResult(true) {
       val someFromToPairs: Set[(String, String)] =
@@ -255,6 +284,10 @@ class XLinkSpec extends FlatSpec {
       }
   }
 
+  //
+  //  Assignment 8
+  //
+
   it should "contain XLink locators and resources as arc xlink:from or xlink:to" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -264,7 +297,7 @@ class XLinkSpec extends FlatSpec {
     // The XLink locators and resources in the first extended link are stored in a Map.
     // The Map key is the xlink:label. This Map can be used below.
 
-    // Note that multiple XLink locators and resource may share the same xlink:label.
+    // Note that multiple XLink locators and resources may share the same xlink:label.
     // This is not a common situation, but nevertheless allowed. In this exercise, it
     // can be assumed that each xlink:label corresponds to precisely one XLink locator or resource.
     // It can also be assumed here that the 'from' can be cast to an XLinkLocator and
@@ -272,13 +305,25 @@ class XLinkSpec extends FlatSpec {
 
     val labeledXLinkByXLinkLabel: Map[String, immutable.IndexedSeq[LabeledXLink]] =
       firstExtendedLink.labeledXlinkMap
-
+      
     // Retrieve the xlink:from and xlink:to values in the arcs of the first extended link.
     // In our example, the xlink:from is an XLink locator, and the xlink:to is an XLink resource.
     // Return the result as a set of pairs of locator hrefs (made absolute) and resource Paths.
     // Use TQA, and do not use yaidom directly.
+      
+    println(labeledXLinkByXLinkLabel)
+    
 
-    val fromToPairsInFirstExtendedLink: Set[(URI, Path)] = ???
+    val fromToPairsInFirstExtendedLink: Set[(URI, Path)] =
+      (firstExtendedLink.arcs map { e => 
+        val fromLocator = labeledXLinkByXLinkLabel(e.from).head.asInstanceOf[XLinkLocator]
+        val toResource  = labeledXLinkByXLinkLabel(e.to).head.asInstanceOf[XLinkResource]
+        
+        val fromURI = fromLocator.baseUri.resolve(fromLocator.rawHref)  
+        val toPath  = toResource.backingElem.path
+        
+        (fromURI, toPath)
+      }).toSet
 
     assertResult(true) {
       val someFromToPairs: Set[(URI, Path)] =
@@ -298,6 +343,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 10
+  //
+
   "An XLink arc" should "have xlink:type 'arc'" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -305,7 +354,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink types using TQA, and not using yaidom directly.
 
-    val xlinkTypesOfArcs: Set[String] = ???
+    val xlinkTypesOfArcs: Set[String] = arcs.map(_.xlinkType).toSet
 
     assertResult(Set("arc")) {
       xlinkTypesOfArcs
@@ -318,6 +367,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 11
+  //
+
   it should "have an xlink:arcrole" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -325,7 +378,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the arcroles using TQA, and not using yaidom directly.
 
-    val arcrolesOfArcs: Set[String] = ???
+    val arcrolesOfArcs: Set[String] = arcs.map(_.arcrole).toSet
 
     assertResult(Set("http://www.xbrl.org/2003/arcrole/concept-label")) {
       arcrolesOfArcs
@@ -338,6 +391,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 12
+  //
+
   "An XLink locator" should "have xlink:type 'locator'" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -345,7 +402,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink types using TQA, and not using yaidom directly.
 
-    val xlinkTypesOfLocators: Set[String] = ???
+    val xlinkTypesOfLocators: Set[String] = locators.map(_.xlinkType).toSet
 
     assertResult(Set("locator")) {
       xlinkTypesOfLocators
@@ -358,6 +415,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 13
+  //
+
   it should "have an xlink:href" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -366,7 +427,7 @@ class XLinkSpec extends FlatSpec {
     // Retrieve the XLink locator href attributes.
     // Use TQA, and do not use yaidom directly.
 
-    val locatorHrefs: Set[URI] = ???
+    val locatorHrefs: Set[URI] = locators.map(_.rawHref).toSet
 
     assertResult(true) {
       val someLocatorHrefs: Set[URI] =
@@ -390,6 +451,10 @@ class XLinkSpec extends FlatSpec {
       }
   }
 
+  //
+  //  Assignment 14
+  //
+
   it should "have a xlink:href resolvable as absolute URI" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -398,7 +463,7 @@ class XLinkSpec extends FlatSpec {
     // Retrieve the XLink locator href attributes, resolving them against the document URI.
     // Use TQA, and do not use yaidom directly.
 
-    val absoluteLocatorHrefs: Set[URI] = ???
+    val absoluteLocatorHrefs: Set[URI] = locators.map(e => e.baseUri.resolve(e.rawHref)).toSet
 
     assertResult(true) {
       val someLocatorHrefs: Set[URI] =
@@ -413,6 +478,10 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
+  //
+  //  Assignment 15
+  //
+
   "An XLink resource" should "have xlink:type 'resource'" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
@@ -420,7 +489,7 @@ class XLinkSpec extends FlatSpec {
 
     // Retrieve the XLink types using TQA, and not using yaidom directly.
 
-    val xlinkTypesOfResources: Set[String] = ???
+    val xlinkTypesOfResources: Set[String] = resources.map(_.xlinkType).toSet
 
     assertResult(Set("resource")) {
       xlinkTypesOfResources
@@ -433,7 +502,11 @@ class XLinkSpec extends FlatSpec {
     }
   }
 
-  "An extended link" should "have 'logical arcs'" in {
+  //
+  //  Assignment 16
+  //
+
+ "An extended link" should "have 'logical arcs'" in {
     val linkbase = taxonomyBase.rootElemUriMap(linkbaseUri)
 
     val extendedLinks = linkbase.findAllElemsOrSelfOfType(classTag[ExtendedLink])
@@ -456,7 +529,16 @@ class XLinkSpec extends FlatSpec {
     // locator as its absolute href and the xlink:to resource as its Path.
     // Use TQA, and do not use yaidom directly.
 
-    val logicalArcsInFirstExtendedLink: Set[XLinkSpec.ArcFromLocatorToResource] = ???
+    val logicalArcsInFirstExtendedLink: Set[XLinkSpec.ArcFromLocatorToResource] =
+      (firstExtendedLink.arcs map { e => 
+        val fromLocator = labeledXLinkByXLinkLabel(e.from).head.asInstanceOf[XLinkLocator]
+        val toResource  = labeledXLinkByXLinkLabel(e.to).head.asInstanceOf[XLinkResource]
+        
+        val fromURI = fromLocator.baseUri.resolve(fromLocator.rawHref)  
+        val toPath  = toResource.backingElem.path
+        
+        XLinkSpec.ArcFromLocatorToResource(e.elr, e.arcrole, fromURI, toPath)
+      }).toSet
 
     assertResult(true) {
       val parentLinkElr = "http://www.xbrl.org/2003/role/link"

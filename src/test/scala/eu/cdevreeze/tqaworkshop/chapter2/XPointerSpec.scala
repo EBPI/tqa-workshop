@@ -20,6 +20,7 @@ import java.io.File
 import java.net.URI
 
 import scala.reflect.classTag
+import scala.collection.immutable
 
 import org.scalatest.FlatSpec
 
@@ -35,6 +36,7 @@ import eu.cdevreeze.tqa.dom.XLinkLocator
 import eu.cdevreeze.tqa.dom.XPointer
 import eu.cdevreeze.tqa.dom.XsdSchema
 import net.sf.saxon.s9api.Processor
+
 
 /**
  * Test specification for (XBRL) XPointer processing, in an XLink context. In this test case, the low level type-safe
@@ -113,10 +115,14 @@ class XPointerSpec extends FlatSpec {
       taxonomyBase.findElemByUri(absoluteLocatorHref).flatMap(_.attributeOption(IdEName))
     }
 
-    // Implement function findElem yourself, using functions withoutFragment and XPointer.findElem.
-
-    def findElem(docUri: URI, idPointer: IdPointer): Option[TaxonomyElem] = ???
-
+    // Implement function findElem yourself, using function XPointer.findElem.
+    
+    def findElem(docUri: URI, idPointer: IdPointer): Option[TaxonomyElem] = {
+      val rootElem = taxonomyBase.rootElemUriMap(docUri)
+      
+      XPointer.findElem(rootElem, immutable.Seq(idPointer))
+    }
+ 
     assertResult(taxonomyBase.findElemByUri(absoluteLocatorHref)) {
       findElem(withoutFragment(absoluteLocatorHref), xpointer)
     }
@@ -160,8 +166,12 @@ class XPointerSpec extends FlatSpec {
 
     // Implement function findElem yourself, using functions withoutFragment and XPointer.findElem.
 
-    def findElem(docUri: URI, idPointer: ChildSequencePointer): Option[TaxonomyElem] = ???
-
+    def findElem(docUri: URI, idPointer: ChildSequencePointer): Option[TaxonomyElem] =  {
+      val rootElem = taxonomyBase.rootElemUriMap(docUri)
+      
+      XPointer.findElem(rootElem, immutable.Seq(idPointer))
+    }
+    
     assertResult(taxonomyBase.findElemByUri(absoluteLocatorHref)) {
       findElem(withoutFragment(absoluteLocatorHref), xpointer)
     }
@@ -205,7 +215,11 @@ class XPointerSpec extends FlatSpec {
 
     // Implement function findElem yourself, using functions withoutFragment and XPointer.findElem.
 
-    def findElem(docUri: URI, idPointer: IdChildSequencePointer): Option[TaxonomyElem] = ???
+    def findElem(docUri: URI, idPointer: IdChildSequencePointer): Option[TaxonomyElem] = {
+      val rootElem = taxonomyBase.rootElemUriMap(docUri)
+      
+      XPointer.findElem(rootElem, immutable.Seq(idPointer))
+    }
 
     assertResult(taxonomyBase.findElemByUri(absoluteLocatorHref)) {
       findElem(withoutFragment(absoluteLocatorHref), xpointer)

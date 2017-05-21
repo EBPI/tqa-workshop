@@ -31,6 +31,7 @@ import eu.cdevreeze.tqa.dom.TaxonomyBase
 import eu.cdevreeze.tqa.dom.XLinkLocator
 import eu.cdevreeze.tqa.dom.XsdSchema
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
+import eu.cdevreeze.yaidom.queryapi.XmlBaseSupport
 import net.sf.saxon.s9api.Processor
 
 /**
@@ -104,7 +105,8 @@ class XmlBaseSpec extends FlatSpec {
     // Now, using yaidom's XmlBaseSupport object, obtain the base URI from the document URI.
     // Try to write this function in such a way that it works for any element and not just the root element.
 
-    def getBaseUriFromDocUri(elem: BackingElemApi): URI = ???
+    def getBaseUriFromDocUri(elem: BackingElemApi): URI =
+      XmlBaseSupport.findBaseUriByDocUriAndPath(elem.docUriOption, elem.rootElem, elem.path)(XmlBaseSupport.JdkUriResolver).get
 
     assertResult(getBaseUriFromDocUri(linkbase.backingElem)) {
       linkbase.backingElem.baseUri
@@ -136,7 +138,8 @@ class XmlBaseSpec extends FlatSpec {
     // Now, using yaidom's XmlBaseSupport object, obtain the base URI from the document URI.
     // Try to write this function in such a way that it works for any element and not just the root element.
 
-    def getBaseUriFromDocUri(elem: BackingElemApi): URI = ???
+    def getBaseUriFromDocUri(elem: BackingElemApi): URI = 
+      XmlBaseSupport.findBaseUriByDocUriAndPath(elem.docUriOption, elem.rootElem, elem.path)(XmlBaseSupport.JdkUriResolver).get
 
     assertResult(getBaseUriFromDocUri(firstExtendedLink.backingElem)) {
       firstExtendedLink.backingElem.baseUri
@@ -150,7 +153,8 @@ class XmlBaseSpec extends FlatSpec {
 
     // Get the locator href made absolute, using its base URI
 
-    def getAbsoluteHref(locator: XLinkLocator): URI = ???
+    def getAbsoluteHref(locator: XLinkLocator): URI =
+      locator.baseUri.resolve(locator.rawHref)
 
     assertResult(true) {
       val someLocatorHrefs: Set[URI] =
