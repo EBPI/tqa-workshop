@@ -19,7 +19,6 @@ package eu.cdevreeze.tqaworkshop.util
 import java.net.URI
 
 import scala.collection.immutable
-import scala.reflect.ClassTag
 
 import eu.cdevreeze.tqa.dom.GlobalElementDeclaration
 import eu.cdevreeze.tqa.dom.TaxonomyBase
