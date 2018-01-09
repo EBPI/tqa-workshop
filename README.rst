@@ -37,8 +37,8 @@ have this documentation at your disposal in a browser.
 .. _`SBT`: http://www.scala-sbt.org/download.html
 .. _`Maven`: https://maven.apache.org/download.cgi
 .. _`Maven central`: https://search.maven.org/
-.. _`yaidom API documentation`: https://www.javadoc.io/doc/eu.cdevreeze.yaidom/yaidom_2.12/1.6.2
-.. _`TQA API documentation`: https://www.javadoc.io/doc/eu.cdevreeze.tqa/tqa_2.12/0.4.4
+.. _`yaidom API documentation`: https://www.javadoc.io/doc/eu.cdevreeze.yaidom/yaidom_2.12/1.7.0
+.. _`TQA API documentation`: https://www.javadoc.io/doc/eu.cdevreeze.tqa/tqa_2.12/0.6.1
 .. _`javadoc.io`: http://javadoc.io/
 
 

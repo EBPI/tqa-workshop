@@ -25,23 +25,25 @@ import scala.reflect.classTag
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.Namespaces
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.ConceptLabelResource
-import eu.cdevreeze.tqa.dom.ConceptReferenceResource
-import eu.cdevreeze.tqa.dom.RoleType
-import eu.cdevreeze.tqa.dom.XLinkResource
-import eu.cdevreeze.tqa.relationship.ConceptLabelRelationship
-import eu.cdevreeze.tqa.relationship.ConceptReferenceRelationship
-import eu.cdevreeze.tqa.relationship.DefaultRelationshipFactory
-import eu.cdevreeze.tqa.relationship.DefinitionRelationship
-import eu.cdevreeze.tqa.relationship.ElementLabelRelationship
-import eu.cdevreeze.tqa.relationship.OtherNonStandardRelationship
-import eu.cdevreeze.tqa.relationship.ParentChildRelationship
-import eu.cdevreeze.tqa.relationship.StandardRelationship
-import eu.cdevreeze.tqa.taxonomy.BasicTaxonomy
-import eu.cdevreeze.tqa.taxonomybuilder.DefaultDtsCollector
-import eu.cdevreeze.tqa.taxonomybuilder.TaxonomyBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.ConceptLabelResource
+import eu.cdevreeze.tqa.base.dom.ConceptReferenceResource
+import eu.cdevreeze.tqa.base.dom.RoleType
+import eu.cdevreeze.tqa.base.dom.XLinkResource
+import eu.cdevreeze.tqa.base.queryapi.ParentChildRelationshipPath
+import eu.cdevreeze.tqa.base.relationship.ConceptLabelRelationship
+import eu.cdevreeze.tqa.base.relationship.ConceptReferenceRelationship
+import eu.cdevreeze.tqa.base.relationship.DefaultRelationshipFactory
+import eu.cdevreeze.tqa.base.relationship.DefinitionRelationship
+import eu.cdevreeze.tqa.base.relationship.ElementLabelRelationship
+import eu.cdevreeze.tqa.base.relationship.OtherNonStandardRelationship
+import eu.cdevreeze.tqa.base.relationship.ParentChildRelationship
+import eu.cdevreeze.tqa.base.relationship.StandardRelationship
+import eu.cdevreeze.tqa.base.taxonomy.BasicTaxonomy
+import eu.cdevreeze.tqa.base.taxonomybuilder.DefaultDtsCollector
+import eu.cdevreeze.tqa.base.taxonomybuilder.TaxonomyBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.tqaworkshop.xbrlinstance.XbrlInstance
 import eu.cdevreeze.yaidom.core.EName
 import net.sf.saxon.s9api.Processor
@@ -69,7 +71,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
   private val processor = new Processor(false)
 
   private val instanceDocBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val xbrlInstance: XbrlInstance = {
     val elem = instanceDocBuilder.build(classOf[TqaQueryApiUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)
@@ -86,7 +88,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
     val rootDir = new File(classOf[TqaQueryApiUsageSpec].getResource("/taxonomy").toURI)
 
     val taxoDocBuilder =
-      new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => UriConverters.uriToLocalUri(uri, rootDir)))
+      new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(rootDir))
 
     val entrypointUri =
       URI.create("http://www.nltaxonomie.nl/nt11/kvk/20161214/entrypoints/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xsd")
@@ -94,7 +96,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
     // The DocumentCollector knows which taxonomy documents belong to the resulting BasicTaxonomy.
     // Here the DocumentCollector is a DefaultDtsCollector, which collects the documents belonging to the DTS.
 
-    val documentCollector = DefaultDtsCollector(Set(entrypointUri))
+    val documentCollector = DefaultDtsCollector()
 
     // The "relationship factory" is used for turning XLink arcs into (higher level) relationships.
     // Without it, we would not be able to query the taxonomy for relationships.
@@ -110,7 +112,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
     // Use the TaxonomyBuilder to create the BasicTaxonomy. It offers the TQA taxonomy query API,
     // whose functions mainly return taxonomy content and relationships.
 
-    taxoBuilder.build()
+    taxoBuilder.build(Set(entrypointUri))
   } ensuring (taxo => taxo.relationships.nonEmpty)
 
   private val RjiNamespace = "http://www.nltaxonomie.nl/nt11/rj/20161214/dictionary/rj-data"
@@ -270,7 +272,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
 
     def findLongestParentChildRelationshipPaths(
       startConcept: EName,
-      elr: String): immutable.IndexedSeq[taxo.ParentChildRelationshipPath] = {
+      elr: String): immutable.IndexedSeq[ParentChildRelationshipPath] = {
 
       // Return all longest parent-child relationship paths starting with the given concept,
       // where each relationship in the path has the given ELR.

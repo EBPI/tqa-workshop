@@ -25,7 +25,9 @@ import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.IdEName
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.tqaworkshop.xbrlinstance.ExplicitMember
 import eu.cdevreeze.tqaworkshop.xbrlinstance.Fact
 import eu.cdevreeze.tqaworkshop.xbrlinstance.Instant
@@ -64,7 +66,8 @@ class QuerySpec extends FlatSpec {
   // Parsing the instance into an "BackingElemApi-backed" XbrlInstance with Saxon, although the use of Saxon does not influence the querying code.
 
   private val processor = new Processor(false)
-  private val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
+  private val docBuilder =
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: XbrlInstance = {
     val elem = docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI)

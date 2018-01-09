@@ -19,7 +19,9 @@ package eu.cdevreeze.tqaworkshop.chapter1
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.core.Path
 import eu.cdevreeze.yaidom.core.Scope
@@ -48,7 +50,8 @@ class QueryApiAsTheorySpec extends FlatSpec {
   // Parsing the instance into an "BackingElemApi" element with Saxon, although the use of Saxon does not influence the querying code.
 
   private val processor = new Processor(false)
-  private val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
+  private val docBuilder =
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: BackingElemApi =
     docBuilder.build(classOf[QueryApiAsTheorySpec].getResource("/sample-Instance-Proof.xml").toURI)

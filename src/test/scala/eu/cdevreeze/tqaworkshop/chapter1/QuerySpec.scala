@@ -24,7 +24,9 @@ import eu.cdevreeze.tqa.ENames.DimensionEName
 import eu.cdevreeze.tqa.ENames.IdEName
 import eu.cdevreeze.tqa.Namespaces.LinkNamespace
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.core.QName
 import eu.cdevreeze.yaidom.core.Scope
@@ -51,7 +53,8 @@ class QuerySpec extends FlatSpec {
   // Parsing the instance into an "BackingElemApi" element with Saxon, although the use of Saxon does not influence the querying code.
 
   private val processor = new Processor(false)
-  private val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
+  private val docBuilder =
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: BackingElemApi =
     docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI)

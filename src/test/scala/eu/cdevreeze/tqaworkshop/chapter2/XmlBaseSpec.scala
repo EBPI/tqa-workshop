@@ -24,13 +24,13 @@ import scala.reflect.classTag
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.XmlBaseEName
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.ExtendedLink
-import eu.cdevreeze.tqa.dom.Linkbase
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.XLinkLocator
-import eu.cdevreeze.tqa.dom.XsdSchema
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.ExtendedLink
+import eu.cdevreeze.tqa.base.dom.Linkbase
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.XLinkLocator
+import eu.cdevreeze.tqa.base.dom.XsdSchema
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
 import net.sf.saxon.s9api.Processor
 
@@ -59,7 +59,7 @@ class XmlBaseSpec extends FlatSpec {
 
   private val processor = new Processor(false)
   private val docBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriConverters.uriToLocalUri(_, taxoRootDir))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(taxoRootDir))
 
   private val schemaUri =
     URI.create("http://www.nltaxonomie.nl/nt11/rj/20170419/dictionary/rj-data.xsd")

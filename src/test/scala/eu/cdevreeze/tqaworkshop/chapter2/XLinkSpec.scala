@@ -31,18 +31,18 @@ import eu.cdevreeze.tqa.ENames.XLinkRoleEName
 import eu.cdevreeze.tqa.ENames.XLinkToEName
 import eu.cdevreeze.tqa.ENames.XLinkTypeEName
 import eu.cdevreeze.tqa.Namespaces.LinkNamespace
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.ExtendedLink
-import eu.cdevreeze.tqa.dom.LabeledXLink
-import eu.cdevreeze.tqa.dom.Linkbase
-import eu.cdevreeze.tqa.dom.LinkbaseRef
-import eu.cdevreeze.tqa.dom.SimpleLink
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.XLinkArc
-import eu.cdevreeze.tqa.dom.XLinkLocator
-import eu.cdevreeze.tqa.dom.XLinkResource
-import eu.cdevreeze.tqa.dom.XsdSchema
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.ExtendedLink
+import eu.cdevreeze.tqa.base.dom.LabeledXLink
+import eu.cdevreeze.tqa.base.dom.Linkbase
+import eu.cdevreeze.tqa.base.dom.LinkbaseRef
+import eu.cdevreeze.tqa.base.dom.SimpleLink
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.XLinkArc
+import eu.cdevreeze.tqa.base.dom.XLinkLocator
+import eu.cdevreeze.tqa.base.dom.XLinkResource
+import eu.cdevreeze.tqa.base.dom.XsdSchema
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.Path
 import net.sf.saxon.s9api.Processor
 
@@ -70,7 +70,7 @@ class XLinkSpec extends FlatSpec {
 
   private val processor = new Processor(false)
   private val docBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriConverters.uriToLocalUri(_, taxoRootDir))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(taxoRootDir))
 
   private val schemaUri =
     URI.create("http://www.nltaxonomie.nl/nt11/rj/20170419/dictionary/rj-data.xsd")

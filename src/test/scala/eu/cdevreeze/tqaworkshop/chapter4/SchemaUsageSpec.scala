@@ -26,16 +26,17 @@ import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames
 import eu.cdevreeze.tqa.SubstitutionGroupMap
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.GlobalElementDeclaration
-import eu.cdevreeze.tqa.dom.ItemDeclaration
-import eu.cdevreeze.tqa.dom.NamedTypeDefinition
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.TaxonomyElem
-import eu.cdevreeze.tqa.dom.TupleDeclaration
-import eu.cdevreeze.tqa.relationship.DefaultRelationshipFactory
-import eu.cdevreeze.tqa.taxonomy.BasicTaxonomy
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
+import eu.cdevreeze.tqa.base.dom.ItemDeclaration
+import eu.cdevreeze.tqa.base.dom.NamedTypeDefinition
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyElem
+import eu.cdevreeze.tqa.base.dom.TupleDeclaration
+import eu.cdevreeze.tqa.base.relationship.DefaultRelationshipFactory
+import eu.cdevreeze.tqa.base.taxonomy.BasicTaxonomy
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.tqaworkshop.xbrlinstance.XbrlInstance
 import eu.cdevreeze.yaidom.core.EName
 import net.sf.saxon.s9api.Processor
@@ -62,12 +63,12 @@ class SchemaUsageSpec extends FlatSpec {
   private val processor = new Processor(false)
 
   private val instanceDocBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => uri))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootDir = new File(classOf[SchemaUsageSpec].getResource("/taxonomy").toURI)
 
   private val taxoDocBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), (uri => UriConverters.uriToLocalUri(uri, rootDir)))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(rootDir))
 
   private val xbrlInstance: XbrlInstance = {
     val elem = instanceDocBuilder.build(classOf[SchemaUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)

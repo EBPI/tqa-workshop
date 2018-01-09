@@ -22,12 +22,13 @@ import java.util.logging.Logger
 
 import scala.collection.immutable
 
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.ConceptDeclaration
-import eu.cdevreeze.tqa.relationship.DefaultRelationshipFactory
-import eu.cdevreeze.tqa.taxonomybuilder.DefaultDtsCollector
-import eu.cdevreeze.tqa.taxonomybuilder.TaxonomyBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.ConceptDeclaration
+import eu.cdevreeze.tqa.base.relationship.DefaultRelationshipFactory
+import eu.cdevreeze.tqa.base.taxonomybuilder.DefaultDtsCollector
+import eu.cdevreeze.tqa.base.taxonomybuilder.DocumentCollector
+import eu.cdevreeze.tqa.base.taxonomybuilder.TaxonomyBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
 import net.sf.saxon.s9api.Processor
 
@@ -82,9 +83,9 @@ object ShowConceptSubstitutionGroups {
     val processor = new Processor(false)
 
     val documentBuilder =
-      new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriConverters.uriToLocalUri(_, rootDir))
+      new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(rootDir))
 
-    val documentCollector = DefaultDtsCollector(entrypointUris)
+    val documentCollector: DocumentCollector = DefaultDtsCollector()
 
     val lenient = System.getProperty("lenient", "false").toBoolean
 
@@ -101,7 +102,7 @@ object ShowConceptSubstitutionGroups {
 
     logger.info(s"Starting building the DTS with entrypoint(s) ${entrypointUris.mkString(", ")}")
 
-    val basicTaxo = taxoBuilder.build()
+    val basicTaxo = taxoBuilder.build(entrypointUris)
 
     val rootElems = basicTaxo.taxonomyBase.rootElems
 

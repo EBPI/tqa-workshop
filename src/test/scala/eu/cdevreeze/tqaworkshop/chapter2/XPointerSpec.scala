@@ -24,17 +24,17 @@ import scala.reflect.classTag
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.IdEName
-import eu.cdevreeze.tqa.backingelem.UriConverters
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.dom.ChildSequencePointer
-import eu.cdevreeze.tqa.dom.IdChildSequencePointer
-import eu.cdevreeze.tqa.dom.IdPointer
-import eu.cdevreeze.tqa.dom.Linkbase
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.TaxonomyElem
-import eu.cdevreeze.tqa.dom.XLinkLocator
-import eu.cdevreeze.tqa.dom.XPointer
-import eu.cdevreeze.tqa.dom.XsdSchema
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.ChildSequencePointer
+import eu.cdevreeze.tqa.base.dom.IdChildSequencePointer
+import eu.cdevreeze.tqa.base.dom.IdPointer
+import eu.cdevreeze.tqa.base.dom.Linkbase
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyElem
+import eu.cdevreeze.tqa.base.dom.XLinkLocator
+import eu.cdevreeze.tqa.base.dom.XPointer
+import eu.cdevreeze.tqa.base.dom.XsdSchema
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import net.sf.saxon.s9api.Processor
 
 /**
@@ -60,7 +60,7 @@ class XPointerSpec extends FlatSpec {
 
   private val processor = new Processor(false)
   private val docBuilder =
-    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriConverters.uriToLocalUri(_, taxoRootDir))
+    new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(taxoRootDir))
 
   private val schemaUri =
     URI.create("http://www.nltaxonomie.nl/nt11/rj/20170419/dictionary/rj-data.xsd")

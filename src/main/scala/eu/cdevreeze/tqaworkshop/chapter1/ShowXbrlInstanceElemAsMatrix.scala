@@ -20,7 +20,9 @@ import java.io.File
 
 import scala.collection.immutable
 
-import eu.cdevreeze.tqa.backingelem.nodeinfo.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
 import net.sf.saxon.s9api.Processor
@@ -50,7 +52,8 @@ object ShowXbrlInstanceElemAsMatrix {
     // We are going to parse an element tree as "BackingElemApi" with Saxon, although this does not affect the querying code.
 
     val processor = new Processor(false)
-    val docBuilder = new SaxonDocumentBuilder(processor.newDocumentBuilder, (uri => uri))
+    val docBuilder =
+      new SaxonDocumentBuilder(processor.newDocumentBuilder, UriResolvers.fromUriConverter(UriConverters.identity))
 
     // We could have used an entirely different DocumentBuilder.
     // The converter could not care less which XML implementation is used underneath (but we do care).

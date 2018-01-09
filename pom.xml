@@ -148,12 +148,12 @@
     <dependency>
       <groupId>eu.cdevreeze.tqa</groupId>
       <artifactId>tqa_${scala.binary.version}</artifactId>
-      <version>0.4.6</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
       <groupId>eu.cdevreeze.yaidom</groupId>
       <artifactId>yaidom_${scala.binary.version}</artifactId>
-      <version>1.6.2</version>
+      <version>1.7.0</version>
     </dependency>
     <!-- Testing dependencies -->
     <dependency>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest_${scala.binary.version}</artifactId>
-      <version>3.0.3</version>
+      <version>3.0.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -20,10 +20,10 @@ import java.net.URI
 
 import scala.collection.immutable
 
-import eu.cdevreeze.tqa.dom.GlobalElementDeclaration
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.TaxonomyElem
-import eu.cdevreeze.tqa.dom.XsdSchema
+import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyElem
+import eu.cdevreeze.tqa.base.dom.XsdSchema
 import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
 

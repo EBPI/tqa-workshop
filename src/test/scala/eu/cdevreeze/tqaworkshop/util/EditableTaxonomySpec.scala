@@ -28,12 +28,14 @@ import eu.cdevreeze.tqa.ENames.XsImportEName
 import eu.cdevreeze.tqa.ENames.XsSchemaEName
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
 import eu.cdevreeze.tqa.SubstitutionGroupMap
-import eu.cdevreeze.tqa.backingelem.indexed.IndexedDocumentBuilder
-import eu.cdevreeze.tqa.dom.GlobalElementDeclaration
-import eu.cdevreeze.tqa.dom.TaxonomyBase
-import eu.cdevreeze.tqa.dom.TaxonomyElem
-import eu.cdevreeze.tqa.dom.XsdSchema
-import eu.cdevreeze.tqa.taxonomy.BasicTaxonomy
+import eu.cdevreeze.tqa.backingelem.indexed.docbuilder.IndexedDocumentBuilder
+import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
+import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyElem
+import eu.cdevreeze.tqa.base.dom.XsdSchema
+import eu.cdevreeze.tqa.base.taxonomy.BasicTaxonomy
+import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
+import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.core.Path
 import eu.cdevreeze.yaidom.indexed
@@ -51,7 +53,8 @@ import eu.cdevreeze.yaidom.resolved
 class EditableTaxonomySpec extends FlatSpec {
 
   private val docParser = DocumentParserUsingDom.newInstance()
-  private val docBuilder = new IndexedDocumentBuilder(docParser, (uri => uri))
+  private val docBuilder =
+    new IndexedDocumentBuilder(docParser, UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val xsdTemplateElem: BackingElemApi =
     docBuilder.build(classOf[EditableTaxonomySpec].getResource("HelloWorld-template.xsd").toURI)
