@@ -74,8 +74,8 @@ class TqaQueryApiUsageSpec extends FlatSpec {
     new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val xbrlInstance: XbrlInstance = {
-    val elem = instanceDocBuilder.build(classOf[TqaQueryApiUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)
-    XbrlInstance(elem)
+    val doc = instanceDocBuilder.build(classOf[TqaQueryApiUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)
+    XbrlInstance(doc.documentElement)
   }
 
   private val taxo: BasicTaxonomy = {
@@ -272,7 +272,7 @@ class TqaQueryApiUsageSpec extends FlatSpec {
 
     def findLongestParentChildRelationshipPaths(
       startConcept: EName,
-      elr: String): immutable.IndexedSeq[ParentChildRelationshipPath] = {
+      elr:          String): immutable.IndexedSeq[ParentChildRelationshipPath] = {
 
       // Return all longest parent-child relationship paths starting with the given concept,
       // where each relationship in the path has the given ELR.

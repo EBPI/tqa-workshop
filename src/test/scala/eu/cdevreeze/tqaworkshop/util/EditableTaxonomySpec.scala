@@ -31,8 +31,8 @@ import eu.cdevreeze.tqa.SubstitutionGroupMap
 import eu.cdevreeze.tqa.backingelem.indexed.docbuilder.IndexedDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
 import eu.cdevreeze.tqa.base.dom.TaxonomyElem
-import eu.cdevreeze.tqa.base.dom.XsdSchema
 import eu.cdevreeze.tqa.base.taxonomy.BasicTaxonomy
 import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
@@ -40,6 +40,7 @@ import eu.cdevreeze.yaidom.core.EName
 import eu.cdevreeze.yaidom.core.Path
 import eu.cdevreeze.yaidom.indexed
 import eu.cdevreeze.yaidom.parse.DocumentParserUsingDom
+import eu.cdevreeze.yaidom.queryapi.BackingDocumentApi
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
 import eu.cdevreeze.yaidom.resolved
 
@@ -56,21 +57,21 @@ class EditableTaxonomySpec extends FlatSpec {
   private val docBuilder =
     new IndexedDocumentBuilder(docParser, UriResolvers.fromUriConverter(UriConverters.identity))
 
-  private val xsdTemplateElem: BackingElemApi =
+  private val xsdTemplateBackingDoc: BackingDocumentApi =
     docBuilder.build(classOf[EditableTaxonomySpec].getResource("HelloWorld-template.xsd").toURI)
 
   private val elemDeclTemplateElem: BackingElemApi = {
-    val root =
+    val doc =
       docBuilder.build(classOf[EditableTaxonomySpec].getResource("HelloWorld-element-template.xsd").toURI)
 
-    root.findChildElem(_.localName == "element").head
+    doc.documentElement.findChildElem(_.localName == "element").head
   }
 
   private def getFallbackPrefix(ns: String): String = sys.error(s"No prefix generation supported!")
   private val backingElemEditor = new IndexedElemEditor(getFallbackPrefix _)
 
   "The taxonomy editor" should "allow insertion of global element declarations" in {
-    val initialTaxoBase = TaxonomyBase.build(Vector(XsdSchema.build(xsdTemplateElem)))
+    val initialTaxoBase = TaxonomyBase.build(Vector(TaxonomyDocument.build(xsdTemplateBackingDoc)))
     val initialEditableTaxo = new EditableTaxonomy(initialTaxoBase, backingElemEditor)
 
     val elemDecls = Vector(
@@ -110,7 +111,7 @@ class EditableTaxonomySpec extends FlatSpec {
     }
 
     val expectedResultElem: indexed.Elem =
-      docBuilder.build(classOf[EditableTaxonomySpec].getResource("HelloWorld.xsd").toURI)
+      docBuilder.build(classOf[EditableTaxonomySpec].getResource("HelloWorld.xsd").toURI).documentElement
 
     assertResult(resolved.Elem(expectedResultElem.underlyingElem.prettify(2))) {
       resolved.Elem(

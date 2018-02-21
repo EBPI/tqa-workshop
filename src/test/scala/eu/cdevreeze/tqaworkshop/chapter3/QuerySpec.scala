@@ -70,8 +70,8 @@ class QuerySpec extends FlatSpec {
     new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: XbrlInstance = {
-    val elem = docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI)
-    XbrlInstance(elem)
+    val doc = docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI)
+    XbrlInstance(doc.documentElement)
   }
 
   private val XbrldiNamespace = "http://xbrl.org/2006/xbrldi"

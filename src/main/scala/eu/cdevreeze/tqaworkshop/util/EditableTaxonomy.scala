@@ -22,6 +22,7 @@ import scala.collection.immutable
 
 import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
 import eu.cdevreeze.tqa.base.dom.TaxonomyElem
 import eu.cdevreeze.tqa.base.dom.XsdSchema
 import eu.cdevreeze.yaidom.core.EName
@@ -34,8 +35,8 @@ import eu.cdevreeze.yaidom.queryapi.BackingElemApi
  * @author Chris de Vreeze
  */
 final class EditableTaxonomy[N, E <: N with BackingElemApi.Aux[E]](
-    val taxonomyBase: TaxonomyBase,
-    val backingElemEditor: BackingElemEditor.Aux[N, E]) {
+  val taxonomyBase:      TaxonomyBase,
+  val backingElemEditor: BackingElemEditor.Aux[N, E]) {
 
   def addGlobalElementDeclarations(decls: immutable.IndexedSeq[GlobalElementDeclaration]): EditableTaxonomy[N, E] = {
     require(
@@ -102,6 +103,6 @@ final class EditableTaxonomy[N, E <: N with BackingElemApi.Aux[E]](
       updates.getOrElse(rootElem.docUri, rootElem)
     }
 
-    TaxonomyBase.build(newRootElems)
+    TaxonomyBase.build(newRootElems.map(e => TaxonomyDocument(None, e)))
   }
 }

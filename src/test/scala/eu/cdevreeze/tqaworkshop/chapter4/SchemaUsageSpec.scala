@@ -31,7 +31,7 @@ import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
 import eu.cdevreeze.tqa.base.dom.ItemDeclaration
 import eu.cdevreeze.tqa.base.dom.NamedTypeDefinition
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
-import eu.cdevreeze.tqa.base.dom.TaxonomyElem
+import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
 import eu.cdevreeze.tqa.base.dom.TupleDeclaration
 import eu.cdevreeze.tqa.base.relationship.DefaultRelationshipFactory
 import eu.cdevreeze.tqa.base.taxonomy.BasicTaxonomy
@@ -71,8 +71,8 @@ class SchemaUsageSpec extends FlatSpec {
     new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromLocalMirrorRootDirectory(rootDir))
 
   private val xbrlInstance: XbrlInstance = {
-    val elem = instanceDocBuilder.build(classOf[SchemaUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)
-    XbrlInstance(elem)
+    val doc = instanceDocBuilder.build(classOf[SchemaUsageSpec].getResource("/kvk-rpt-jaarverantwoording-2016-nlgaap-klein-publicatiestukken.xbrl").toURI)
+    XbrlInstance(doc.documentElement)
   }
 
   private val SbrDomainMemberItemEName = EName("{http://www.nltaxonomie.nl/2011/xbrl/xbrl-syntax-extension}domainMemberItem")
@@ -89,9 +89,9 @@ class SchemaUsageSpec extends FlatSpec {
 
     // Building the taxonomy DOM, one root element per parsed taxonomy document.
 
-    val rootElems = docUris.map(uri => TaxonomyElem.build(taxoDocBuilder.build(uri)))
+    val docs = docUris.map(uri => TaxonomyDocument.build(taxoDocBuilder.build(uri)))
 
-    val taxoBase = TaxonomyBase.build(rootElems)
+    val taxoBase = TaxonomyBase.build(docs)
 
     // Building a taxonomy that offers the TQA taxonomy query API.
     // It wraps the "DOM-level taxonomy".

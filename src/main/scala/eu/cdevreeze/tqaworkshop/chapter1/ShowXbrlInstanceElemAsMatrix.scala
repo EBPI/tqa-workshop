@@ -24,7 +24,7 @@ import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName
-import eu.cdevreeze.yaidom.queryapi.BackingElemApi
+import eu.cdevreeze.yaidom.queryapi.BackingDocumentApi
 import net.sf.saxon.s9api.Processor
 
 /**
@@ -57,12 +57,12 @@ object ShowXbrlInstanceElemAsMatrix {
 
     // We could have used an entirely different DocumentBuilder.
     // The converter could not care less which XML implementation is used underneath (but we do care).
-    val rootElem: BackingElemApi = docBuilder.build(inputXmlFile.toURI)
+    val doc: BackingDocumentApi = docBuilder.build(inputXmlFile.toURI)
 
     val converter = new XbrlInstanceElemToRowsConverter
 
     val matrix: immutable.IndexedSeq[XbrlInstanceElemToRowsConverter.Row] =
-      converter.convertXbrlInstance(rootElem)
+      converter.convertXbrlInstance(doc.documentElement)
 
     val dimensions: immutable.IndexedSeq[EName] =
       matrix.flatMap(_.explicitDimensionMembers.keySet).distinct.sortBy(_.toString)

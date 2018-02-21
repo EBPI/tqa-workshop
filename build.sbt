@@ -15,21 +15,11 @@ crossScalaVersions := Seq("2.11.11", "2.12.4")
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint")
 // No -Xfatal-warnings, because we often introduce unsed code in the tests
 
-(unmanagedSourceDirectories in Compile) <++= (scalaBinaryVersion, baseDirectory) apply { case (version, base) =>
-  if (version.contains("2.12")) Seq(base / "src" / "main" / "scala-2.12")
-  else if (version.contains("2.11")) Seq(base / "src" / "main" / "scala-2.11") else Seq()
-}
-
-(unmanagedSourceDirectories in Test) <++= (scalaBinaryVersion, baseDirectory) apply { case (version, base) =>
-  if (version.contains("2.12")) Seq(base / "src" / "test" / "scala-2.12")
-  else if (version.contains("2.11")) Seq(base / "src" / "test" / "scala-2.11") else Seq()
-}
-
-libraryDependencies += "eu.cdevreeze.tqa" %% "tqa" % "0.6.1" excludeAll(
+libraryDependencies += "eu.cdevreeze.tqa" %% "tqa" % "0.7.0" excludeAll(
   ExclusionRule(organization = "eu.cdevreeze.yaidom")
 )
 
-libraryDependencies += "eu.cdevreeze.yaidom" %% "yaidom" % "1.7.0"
+libraryDependencies += "eu.cdevreeze.yaidom" %% "yaidom" % "1.7.1"
 
 libraryDependencies += "junit" % "junit" % "4.12" % "test"
 

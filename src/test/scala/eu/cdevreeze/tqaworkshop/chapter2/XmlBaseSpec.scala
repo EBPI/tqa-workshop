@@ -26,10 +26,9 @@ import org.scalatest.FlatSpec
 import eu.cdevreeze.tqa.ENames.XmlBaseEName
 import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.ExtendedLink
-import eu.cdevreeze.tqa.base.dom.Linkbase
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
+import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
 import eu.cdevreeze.tqa.base.dom.XLinkLocator
-import eu.cdevreeze.tqa.base.dom.XsdSchema
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.queryapi.BackingElemApi
 import net.sf.saxon.s9api.Processor
@@ -67,17 +66,17 @@ class XmlBaseSpec extends FlatSpec {
     URI.create("http://www.nltaxonomie.nl/nt11/rj/20170419/dictionary/rj-data-verbose-lab-en-edited.xml")
 
   private val taxonomyBase: TaxonomyBase = {
-    val schemaElem = docBuilder.build(schemaUri)
-    val linkbaseElem = docBuilder.build(linkbaseUri)
+    val schemaBackingDoc = docBuilder.build(schemaUri)
+    val linkbaseBackingDoc = docBuilder.build(linkbaseUri)
 
-    val schema = XsdSchema.build(schemaElem)
-    val linkbase = Linkbase.build(linkbaseElem)
+    val schemaDoc = TaxonomyDocument.build(schemaBackingDoc)
+    val linkbaseDoc = TaxonomyDocument.build(linkbaseBackingDoc)
 
     // Return a TQA TaxonomyBase object, containing the schema and linkbase as TQA type-safe DOM trees.
     // Due to the way they have been parsed, they contain the original HTTP document URIs, although they have been
     // parsed from the local file system.
 
-    TaxonomyBase.build(Vector(schema, linkbase))
+    TaxonomyBase.build(Vector(schemaDoc, linkbaseDoc))
   }
 
   //

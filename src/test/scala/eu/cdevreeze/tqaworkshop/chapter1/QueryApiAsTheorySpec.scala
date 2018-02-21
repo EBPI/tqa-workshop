@@ -54,7 +54,7 @@ class QueryApiAsTheorySpec extends FlatSpec {
     new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: BackingElemApi =
-    docBuilder.build(classOf[QueryApiAsTheorySpec].getResource("/sample-Instance-Proof.xml").toURI)
+    docBuilder.build(classOf[QueryApiAsTheorySpec].getResource("/sample-Instance-Proof.xml").toURI).documentElement
 
   private def isInXbrlNamespace(elem: BackingElemApi): Boolean = {
     elem.resolvedName.namespaceUriOption.contains(XbrliNamespace)

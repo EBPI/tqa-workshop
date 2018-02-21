@@ -57,7 +57,7 @@ class QuerySpec extends FlatSpec {
     new SaxonDocumentBuilder(processor.newDocumentBuilder(), UriResolvers.fromUriConverter(UriConverters.identity))
 
   private val rootElem: BackingElemApi =
-    docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI)
+    docBuilder.build(classOf[QuerySpec].getResource("/sample-Instance-Proof.xml").toURI).documentElement
 
   private val XbrldiNamespace = "http://xbrl.org/2006/xbrldi"
   private val Iso4217Namespace = "http://www.xbrl.org/2003/iso4217"
