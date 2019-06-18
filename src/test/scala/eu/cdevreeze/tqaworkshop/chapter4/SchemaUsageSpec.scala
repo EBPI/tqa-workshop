@@ -26,7 +26,7 @@ import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames
 import eu.cdevreeze.tqa.SubstitutionGroupMap
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.GlobalElementDeclaration
 import eu.cdevreeze.tqa.base.dom.ItemDeclaration
 import eu.cdevreeze.tqa.base.dom.NamedTypeDefinition

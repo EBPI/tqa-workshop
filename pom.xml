@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <properties>
-    <scala.version>2.11.11</scala.version>
-    <scala.binary.version>2.11</scala.binary.version>
+    <scala.version>2.12.8</scala.version>
+    <scala.binary.version>2.12</scala.binary.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <groupId>eu.cdevreeze.tqaworkshop</groupId>
@@ -148,12 +148,12 @@
     <dependency>
       <groupId>eu.cdevreeze.tqa</groupId>
       <artifactId>tqa_${scala.binary.version}</artifactId>
-      <version>0.7.0</version>
+      <version>0.8.9</version>
     </dependency>
     <dependency>
       <groupId>eu.cdevreeze.yaidom</groupId>
       <artifactId>yaidom_${scala.binary.version}</artifactId>
-      <version>1.7.1</version>
+      <version>1.9.0</version>
     </dependency>
     <!-- Testing dependencies -->
     <dependency>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest_${scala.binary.version}</artifactId>
-      <version>3.0.4</version>
+      <version>3.0.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>

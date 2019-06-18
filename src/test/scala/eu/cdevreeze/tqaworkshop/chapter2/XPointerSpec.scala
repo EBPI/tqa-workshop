@@ -24,15 +24,15 @@ import scala.reflect.classTag
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.IdEName
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
-import eu.cdevreeze.tqa.base.dom.ChildSequencePointer
-import eu.cdevreeze.tqa.base.dom.IdChildSequencePointer
-import eu.cdevreeze.tqa.base.dom.IdPointer
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.ChildSequencePointer
+import eu.cdevreeze.tqa.IdChildSequencePointer
+import eu.cdevreeze.tqa.IdPointer
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
 import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
 import eu.cdevreeze.tqa.base.dom.TaxonomyElem
 import eu.cdevreeze.tqa.base.dom.XLinkLocator
-import eu.cdevreeze.tqa.base.dom.XPointer
+import eu.cdevreeze.tqa.XPointer
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import net.sf.saxon.s9api.Processor
 

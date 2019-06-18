@@ -31,7 +31,7 @@ import eu.cdevreeze.tqa.ENames.XLinkRoleEName
 import eu.cdevreeze.tqa.ENames.XLinkToEName
 import eu.cdevreeze.tqa.ENames.XLinkTypeEName
 import eu.cdevreeze.tqa.Namespaces.LinkNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.ExtendedLink
 import eu.cdevreeze.tqa.base.dom.LabeledXLink
 import eu.cdevreeze.tqa.base.dom.LinkbaseRef

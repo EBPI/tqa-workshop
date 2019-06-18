@@ -22,7 +22,7 @@ import java.util.logging.Logger
 
 import scala.collection.immutable
 
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.ConceptDeclaration
 import eu.cdevreeze.tqa.base.relationship.DefaultRelationshipFactory
 import eu.cdevreeze.tqa.base.taxonomybuilder.DefaultDtsCollector

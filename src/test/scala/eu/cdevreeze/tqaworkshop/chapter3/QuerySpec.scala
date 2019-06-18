@@ -25,7 +25,7 @@ import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.IdEName
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.tqaworkshop.xbrlinstance.ExplicitMember

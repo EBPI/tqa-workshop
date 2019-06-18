@@ -24,7 +24,7 @@ import eu.cdevreeze.tqa.ENames.DimensionEName
 import eu.cdevreeze.tqa.ENames.IdEName
 import eu.cdevreeze.tqa.Namespaces.LinkNamespace
 import eu.cdevreeze.tqa.Namespaces.XbrliNamespace
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.docbuilder.jvm.UriConverters
 import eu.cdevreeze.tqa.docbuilder.jvm.UriResolvers
 import eu.cdevreeze.yaidom.core.EName

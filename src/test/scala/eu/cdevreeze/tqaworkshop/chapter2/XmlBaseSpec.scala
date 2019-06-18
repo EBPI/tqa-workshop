@@ -24,7 +24,7 @@ import scala.reflect.classTag
 import org.scalatest.FlatSpec
 
 import eu.cdevreeze.tqa.ENames.XmlBaseEName
-import eu.cdevreeze.tqa.backingelem.nodeinfo.docbuilder.SaxonDocumentBuilder
+import eu.cdevreeze.tqa.docbuilder.saxon.SaxonDocumentBuilder
 import eu.cdevreeze.tqa.base.dom.ExtendedLink
 import eu.cdevreeze.tqa.base.dom.TaxonomyBase
 import eu.cdevreeze.tqa.base.dom.TaxonomyDocument
